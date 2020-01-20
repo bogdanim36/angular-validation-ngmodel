@@ -1,0 +1,69 @@
+<mat-form-field class="w-100"
+                appearance="outline"
+                [class.mat-form-field-invalid]="!disabled && fieldValidations?.hasError">
+  <mat-label>{{label}}</mat-label>
+  <mat-select *ngIf="!multiSelect"
+              #singleSelectElement
+              [(value)]="value"
+              [disabled]="disabled"
+              (selectionChange)="updateChanges()">
+    <mat-select-search *ngIf="hasSearch" [formControl]="filterCtrl"></mat-select-search>
+    <mat-select-trigger *ngIf="matOptionDisplayField">
+      {{ (matOptionValueItemField === 'item' ? (singleSelectElement.value ? singleSelectElement.value[matOptionDisplayField] : "") : singleSelectElement.value)|translate}}
+    </mat-select-trigger>
+    <ng-container *ngIf="!options$ ">
+      <mat-option *ngFor="let item of options" [value]="matOptionValueItemField === 'item'? item : item[matOptionValueItemField]">
+        <ng-container *ngIf="matOptionTpl">
+          <ng-container *ngTemplateOutlet="matOptionTpl; context:{item:item}"></ng-container>
+        </ng-container>
+        <ng-container *ngIf="!matOptionTpl">          
+          {{(matOptionValueItemField === 'item' ? item : item[matOptionDisplayField]) | translate}}
+        </ng-container>
+      </mat-option>
+    </ng-container>
+    <ng-container *ngIf="options$ ">
+      <mat-option *ngFor="let item of filteredOptions | async" [value]="matOptionValueItemField === 'item'? item : item[matOptionValueItemField]">
+        <ng-container *ngIf="matOptionTpl">
+          <ng-container *ngTemplateOutlet="matOptionTpl; context:{item:item}"></ng-container>
+        </ng-container>
+        <ng-container *ngIf="!matOptionTpl">          
+          {{(matOptionValueItemField === 'item' ? item : item[matOptionDisplayField]) | translate}}
+        </ng-container>
+      </mat-option>
+    </ng-container>
+  </mat-select>
+  <mat-select *ngIf="multiSelect"
+              #multiSelectElement
+              multiple
+              [(value)]="value"
+              [disabled]="disabled"
+              (selectionChange)="updateChanges()">
+    <mat-select-search *ngIf="hasSearch" [formControl]="filterCtrl"></mat-select-search>
+    <mat-select-trigger *ngIf="matOptionDisplayField">
+      {{ (matOptionValueItemField === 'item' ? (multiSelectElement.value ? multiSelectElement.value[matOptionDisplayField] : "") : (multiSelectElement.value ? multiSelectElement.value.join(', ') : ''))|translate}}
+    </mat-select-trigger>
+    <ng-container *ngIf="!options$ ">
+      <mat-option *ngFor="let item of options" [value]="matOptionValueItemField === 'item'? item:item[matOptionValueItemField]">
+        <ng-container *ngIf="matOptionTpl">
+          <ng-container *ngTemplateOutlet="matOptionTpl; context:{item:item}"></ng-container>
+        </ng-container>
+        <ng-container *ngIf="!matOptionTpl">
+          {{item[matOptionDisplayField]|translate}}
+        </ng-container>
+      </mat-option>
+    </ng-container>
+    <ng-container *ngIf="options$ ">
+      <mat-option *ngFor="let item of filteredOptions | async" [value]="matOptionValueItemField === 'item'? item: item[matOptionValueItemField]">
+        <ng-container *ngIf="matOptionTpl">
+          <ng-container *ngTemplateOutlet="matOptionTpl; context:{item:item}"></ng-container>
+        </ng-container>
+        <ng-container *ngIf="!matOptionTpl">
+          {{item[matOptionDisplayField]|translate}}
+        </ng-container>
+      </mat-option>
+    </ng-container>
+  </mat-select>
+  <input-error-message style="top:initial;bottom:-7px"
+                       *ngIf="!disabled"
+                       [fieldValidations]="fieldValidations"></input-error-message>
+</mat-form-field>

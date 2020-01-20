@@ -1,0 +1,7 @@
+
+:host(:focus) {
+    outline: none;
+}
+.disabled:focus {
+    outline: none;
+}
