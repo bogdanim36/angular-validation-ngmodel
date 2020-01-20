@@ -1,7 +1,7 @@
 # angular-validation-ngmodel
-A library for for show validation error messages on input with ngModel
-Video:
-https://youtu.be/ILRQ3v69x7k
+A library for for show validation error messages on input with ngModel.
+
+Video:https://youtu.be/ILRQ3v69x7k
 
 # Multiple horizontal tabs component
 
