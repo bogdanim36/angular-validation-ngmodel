@@ -1,0 +1,16 @@
+<mat-form-field class="mat-form-field--no-underline w-100">
+  <mat-label *ngIf="labelTpl">
+    <ng-container *ngTemplateOutlet="labelTpl"></ng-container>
+  </mat-label>
+  <mat-label *ngIf="!labelTpl && label">{{label}}</mat-label>
+  <input matInput placeholder="Input"
+         #input
+         value="xxx"
+         autocomplete="off"
+         class="d-none">
+  <div [classList]="radioCssClass? radioCssClass: ''">
+    <mat-radio-button [value]="true" (click)="updateChanges()" [disabled]="disabled">{{"Yes"|translate}}</mat-radio-button>
+    <mat-radio-button [value]="false" (click)="updateChanges()" [disabled]="disabled">{{"No"|translate}}</mat-radio-button>
+  </div>
+  <input-error-message *ngIf="!disabled" [fieldValidations]="fieldValidations"></input-error-message>
+</mat-form-field>

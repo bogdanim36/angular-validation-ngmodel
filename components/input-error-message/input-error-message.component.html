@@ -1,0 +1,8 @@
+<ng-container *ngIf="fieldValidations">
+  <mat-hint *ngIf="fieldValidations.hasError">
+    <span class="error">{{ fieldValidations.message | translate }}</span>
+  </mat-hint>
+  <mat-hint *ngIf="!fieldValidations.hasError && fieldValidations.hasWarning">
+    <span class="warning">{{ fieldValidations.message | translate }}</span>
+  </mat-hint>
+</ng-container>

@@ -1,0 +1,20 @@
+.mat-snack-bar-container {
+    border-radius: 0;
+    border: 1px solid #F95555;
+    background-color: #FFE1E1;
+    color: #222222;
+    font-style: italic;
+    box-shadow: 0 2px 12px 0 rgba(199,199,199,0.5);
+}
+.error-message {
+    .mat-icon-button {
+        width: 24px;
+        height: 17px;
+        line-height: 17px;
+    }
+
+    mat-icon {
+        font-size: 14px;
+        color: #F95555;
+    }
+}
