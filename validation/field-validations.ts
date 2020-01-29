@@ -1,4 +1,5 @@
 import {FieldValidation} from '@app/synergy/validation/field-validation';
+import {Validators} from '@app/synergy/validation/validators';
 
 export class FieldValidations {
   hasError ? = false;
@@ -24,7 +25,7 @@ export class FieldValidations {
   }
 
   addValidation(validation: Partial<FieldValidation>) {
-    this.validations.push(new FieldValidation(validation));
+    this.validations.push(new Validators.custom(validation));
   }
 
   validate(value?): boolean {
