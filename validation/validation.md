@@ -114,9 +114,7 @@ component.ts
       }
     
       ngOnInit() {
-        if (!this.isHistory) {
-          this.setValidations();
-        }
+        this.setValidations();
       }
     
       setValidations() {
