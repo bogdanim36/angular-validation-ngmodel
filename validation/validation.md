@@ -106,7 +106,7 @@ component.html
 
 component.ts
 
-    export class ContactDataComponent extends CreditCardsBaseTab<ClientData> implements OnInit {
+    export class ContactDataComponent implements OnInit {
       @Input() validation: FieldsGroupValidation;
       phoneTypesList: string[] = ['mobile', 'landline', 'work'];
     
@@ -185,8 +185,7 @@ component.html
 
 component.ts
 
-    export class LocationAddressComponent extends CreditCardsBaseTab<LocationAddress> implements OnInit, AfterViewInit {
-      @Input() addressName: string;
+    export class LocationAddressComponent  implements OnInit, AfterViewInit {
       @Input() validation: FieldsGroupValidation;
       @Input() isModal = false;
       
