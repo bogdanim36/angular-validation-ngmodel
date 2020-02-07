@@ -18,21 +18,26 @@ export class TransformToTitleCase extends FieldValidation {
     let reference = this.getReference(this.path, this.data);
     let value = this.getObjectInScope(this.path, this.data);
     if (value) {
-      this.separators.forEach(separator => {
-        value = this.titleCase(value, separator);
-      });
-      reference.source[reference.path] = value;
+      reference.source[reference.path] = this.titleCase(value);
     }
     return true;
   }
 
-  titleCase(value: string, separator: string) {
-    let words = value.split(separator);
-    let newWords = [];
-    words.forEach(word => {
-      word = word.trim();
-      newWords.push(word.substr(0, 1).toUpperCase() + word.substring(1));
+  titleCase(value: string) {
+    let chars = value.toLowerCase().split('');
+    let startWord = true;
+    let newChars = chars.map(char => {
+      if (startWord) {
+        startWord = false;
+        return char.toUpperCase();
+      } else if (this.separators.indexOf(char) > -1) {
+        startWord = true;
+        return char;
+      } else {
+        return char;
+      }
     });
-    return newWords.join(separator);
+    return newChars.join('');
   }
+
 }

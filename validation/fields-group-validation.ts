@@ -4,8 +4,11 @@ import {CollectionValidation} from '@app/synergy/validation/collection-validatio
 
 export class FieldsGroupValidation {
   fields: { [key: string]: FieldValidations | any } = {};
+  message ? = '';
+  hasError = false;
   valid = true;
   id?: string;
+  errors: { [key: string]: any | string };
   eventEmitter = new EventEmitter<boolean>();
 
   constructor(fields?: Partial<FieldValidations>[] | any) {
@@ -16,6 +19,7 @@ export class FieldsGroupValidation {
 
   clear() {
     this.valid = true;
+    this.hasError = false;
     this.eventEmitter.next(this.valid);
     this.fields = {};
   }
@@ -35,6 +39,11 @@ export class FieldsGroupValidation {
     }
   }
 
+  addValidator(initial: { path: string, containerPath?: string, validation: FieldsGroupValidation | CollectionValidation }) {
+    let container = this.getContainerObject(initial.containerPath, this.fields);
+    container[initial.path] = initial.validation;
+  }
+
   addField(initial: Partial<FieldValidations>, getValue?: Function) {
     let container = this.getContainerObject(initial.containerPath, this.fields);
     if (initial instanceof FieldValidations) {
@@ -51,6 +60,7 @@ export class FieldsGroupValidation {
   validate(data?) {
     let oldValue = this.valid;
     this.valid = this.scanFields(this.fields, data);
+    this.hasError = !this.valid;
     this.eventEmitter.emit(this.valid);
     // console.log('fieldsGroupValidation', this.id, this.valid);
     return this.valid;
@@ -58,18 +68,25 @@ export class FieldsGroupValidation {
 
   scanFields(fields, data?) {
     let valid = true;
-
+    this.errors = {};
     for (let fieldName in fields) {
-      let field = fields[fieldName];
+      let field: any = fields[fieldName];
       if (data) {
         field.data = data;
       }
-      if (field instanceof FieldValidations || field instanceof CollectionValidation || field instanceof FieldsGroupValidation) {
+      if (field instanceof FieldValidations) {
         if (!field.validate()) {
           valid = false;
+          this.errors[field.path] = field.message || 'mandatoryField';
+        }
+      } else if (field instanceof CollectionValidation || field instanceof FieldsGroupValidation) {
+        if (!field.validate()) {
+          valid = false;
+          this.errors[fieldName + '_section'] = field.errors;
         }
       } else if (!this.scanFields(field, data)) {
         valid = false;
+        this.errors[fieldName + '_section'] = field.message;
       }
     }
     return valid;

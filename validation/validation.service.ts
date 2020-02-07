@@ -11,7 +11,6 @@ export class ValidationService {
   validStateEvent = new EventEmitter<boolean>();
   subscriptions: Subscription[] = [];
   dataValidity = true;
-
   constructor() {
   }
 
@@ -57,6 +56,7 @@ export class ValidationService {
       console.log('validation finish', true);
     }
     this.validStateEvent.emit(valid);
+    // setTimeout(() => this.validStateEvent.emit(valid));
     return this.dataValidity;
   }
 
@@ -72,7 +72,8 @@ export class ValidationService {
           console.warn('tab with error', tabName, this.tabs[tabName].validator);
         }
         this.dataValidity = validityState;
-        this.validStateEvent.emit(validityState);
+        // this.validStateEvent.emit(validityState);
+        setTimeout(() => this.validStateEvent.emit(validityState));
         // console.log('validityState', validityState);
       }));
 

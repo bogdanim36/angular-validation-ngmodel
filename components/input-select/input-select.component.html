@@ -1,6 +1,6 @@
 <mat-form-field class="w-100"
                 appearance="outline"
-                [class.mat-form-field-invalid]="!disabled && fieldValidations?.hasError">
+                [class.input-invalid]="!disabled && fieldValidations?.hasError">
   <mat-label>{{label}}</mat-label>
   <mat-select *ngIf="!multiSelect"
               #singleSelectElement
@@ -16,7 +16,7 @@
         <ng-container *ngIf="matOptionTpl">
           <ng-container *ngTemplateOutlet="matOptionTpl; context:{item:item}"></ng-container>
         </ng-container>
-        <ng-container *ngIf="!matOptionTpl">          
+        <ng-container *ngIf="!matOptionTpl">
           {{(matOptionValueItemField === 'item' ? item : item[matOptionDisplayField]) | translate}}
         </ng-container>
       </mat-option>
@@ -26,7 +26,7 @@
         <ng-container *ngIf="matOptionTpl">
           <ng-container *ngTemplateOutlet="matOptionTpl; context:{item:item}"></ng-container>
         </ng-container>
-        <ng-container *ngIf="!matOptionTpl">          
+        <ng-container *ngIf="!matOptionTpl">
           {{(matOptionValueItemField === 'item' ? item : item[matOptionDisplayField]) | translate}}
         </ng-container>
       </mat-option>

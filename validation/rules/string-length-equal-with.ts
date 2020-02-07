@@ -15,7 +15,11 @@ export class StringLengthEqualWith extends FieldValidation {
 
 
   rule(value) {
-    return value !== null && value !== undefined && typeof value === 'string' && (value.length === this.stringLength);
+    if (value === null || value === undefined) {
+      return true;
+    }
+    value = typeof value === 'string' ? value : value.toString();
+    return value.length === this.stringLength;
   }
 
 

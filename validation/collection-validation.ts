@@ -4,9 +4,11 @@ import {environment} from '@env/environment';
 
 export class CollectionValidation {
   validations: FieldsGroupValidation[] = [];
+  fields: { [key: string]: any }; // dummy property, dont' delete !!!!
   valid = true;
   id: string;
   eventEmitter = new EventEmitter<boolean>();
+  errors: { [key: string]: any | string }[];
 
   constructor() {
   }
@@ -29,15 +31,18 @@ export class CollectionValidation {
       this.validate();
     }
   }
+
   validateWithTimeout() {
     setTimeout(() => this.validate());
   }
+
   validate() {
-    let oldValue = this.valid;
     this.valid = true;
+    this.errors = [];
     this.validations.forEach(item => {
       let itemIsValid = item.validate();
       this.valid = this.valid && itemIsValid;
+      this.errors.push(item.errors);
     });
     this.eventEmitter.emit(this.valid);
     // console.log('collection validation', this.id, this.valid, this.validations);

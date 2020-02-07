@@ -36,7 +36,7 @@ import {NumberConverter} from '@app/synergy/services/number.service';
   }
 })
 export class InputNumberFormatComponent implements OnInit, OnDestroy, DoCheck, ControlValueAccessor, MatFormFieldControl<any> {
-  //, Validator {
+  //, Validators {
   @ViewChild('inputNo') inputNo;
   isActive: boolean = false;
   formatedNumber: string = '';

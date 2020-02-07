@@ -7,14 +7,16 @@ import {OnlyLetters} from '@app/synergy/validation/rules/only-letters';
 import {EmailFormat} from '@app/synergy/validation/rules/email-format';
 import {BackendValidation} from '@app/synergy/validation/rules/backend-validation';
 import {FieldValidation} from '@app/synergy/validation/field-validation';
+import {OnlyInteger} from '@app/synergy/validation/rules/only-integer';
 
 export class Validators {
   static mandatory = FieldIsMandatory;
   static startsWith = StartsWith;
   static stringLengthEqualWith = StringLengthEqualWith;
   static onlyRegex = OnlyRegex;
-  static onlyNumbers = OnlyNumbers;
+  static number = OnlyNumbers;
   static onlyLetters = OnlyLetters;
+  static integer = OnlyInteger;
   static emailFormat = EmailFormat;
   static backend = BackendValidation;
   static custom = FieldValidation;

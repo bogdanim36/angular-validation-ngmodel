@@ -14,6 +14,7 @@ export class EmailFormat extends FieldValidation {
     }
     let atPosition = value.indexOf('@');
     let dotPosition = value.lastIndexOf('.');
-    return !(atPosition <= 0 || dotPosition === -1 || dotPosition < atPosition + 2 || value.length < dotPosition + 2);
+    let spacePosition = value.indexOf(' ');
+    return !(atPosition <= 0 || dotPosition === -1 || dotPosition < atPosition + 2 || value.length < dotPosition + 2 || spacePosition > -1);
   }
 }

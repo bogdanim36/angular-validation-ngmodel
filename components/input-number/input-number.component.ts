@@ -1,4 +1,4 @@
-import {Component, EventEmitter, forwardRef, Input, Output} from '@angular/core';
+import {Component, EventEmitter, forwardRef, Input, OnInit, Output} from '@angular/core';
 import {NG_VALUE_ACCESSOR} from '@angular/forms';
 import {InputBaseComponent} from '@app/synergy/components/input-base/input-base.component';
 
@@ -13,7 +13,7 @@ import {InputBaseComponent} from '@app/synergy/components/input-base/input-base.
     }
   ]
 })
-export class InputNumberComponent extends InputBaseComponent {
+export class InputNumberComponent extends InputBaseComponent implements OnInit {
   @Input() min;
   @Input() max;
   @Input() step;
@@ -21,5 +21,25 @@ export class InputNumberComponent extends InputBaseComponent {
   @Input() tickInterval;
   @Input() hasSlider;
   @Input() hasLimitText;
+  @Input() integer: boolean;
   @Output() blur = new EventEmitter<string>();
+  pattern: string;
+
+  ngOnInit(): void {
+    super.ngOnInit();
+    if (this.integer) {
+      this.step = 1;
+      this.min = 1;
+    }
+  }
+
+  keyPressHandle(event) {
+    if (this.integer) {
+      let key = event.code;
+      return !['Minus', 'Period'].includes(key);
+    } else {
+      return true;
+    }
+
+  }
 }

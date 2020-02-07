@@ -1,6 +1,7 @@
 # Multiple horizontal tabs component
 
- main.component.ts
+ ## Component with multiple tabs
+ main.component.ts 
     
     constructor( public validationService: ValidationService  ) {
     }
@@ -10,7 +11,11 @@
     }
 
     ngAfterViewInit(): void {
-        this.validationService.initialize(); // for show validation messages on page initialization
+        this.validationService.validateWithTimeout(); // for show validation messages on page initialization
+    }
+    
+    checkValidations(){
+        return this.validationService.validate()
     }
     
 main.component.html
@@ -26,13 +31,14 @@ main.component.html
                         ></offer-data-tab>
     </mat-tab>`
     
-#Collections with vertical tabs component
+##Collections with vertical tabs component
 
 component.ts
 
-    export class PersonalDataTabComponent extends CreditCardsBaseTab<PersonalData> implements OnInit {
+    export class PersonalDataTabComponent implements OnInit {
         validation: CollectionValidation;
-    
+        @Output() validationStateEvent = new EventEmitter<boolean>();
+     
         constructor(private validationService: ValidationService) {
             super();
         }
@@ -43,6 +49,7 @@ component.ts
     
         setValidations() {
             this.validation = new CollectionValidation();
+            this.validation.id = 'personalData';
             this.validation.eventEmitter = this.validationStateEvent;
             this.validationService.addTab('personalData', this.validation);
         }
@@ -63,12 +70,13 @@ component.html
       </mat-tab>
     </mat-tab-group>
 
-#Collection item component
+##Collection item component
 
 component.ts
 
-    export class PersonalDataItemComponent extends CreditCardsBaseTab<ClientData> implements OnInit {
+    export class PersonalDataItemComponent implements OnInit {
       validation: FieldsGroupValidation;
+       @Output() validationStateEvent = new EventEmitter<boolean>();
     
       constructor(private validationService: ValidationService) {
       }
@@ -80,20 +88,21 @@ component.ts
     
       setValidations() {
         this.validation = new FieldsGroupValidation();
-        this.validation.id = 'personalDataForm';
-        if (!this.isHistory) {
-          this.validation.addField({path: 'data.primaryPhone', data: this, validations: [FieldIsMandatory]});
-        }
-    
+        this.validation.id = 'personalDataItem';
+        this.validation.addField({path: 'data.primaryPhone', data: this, validations: [Validators.mandatory]}); 
         this.validation.eventEmitter = this.validationStateEvent;
         this.validationService.addToCollection('personalData', this.validation);
       }
       
 component.html
 
-     <input-text [validation]="validation.fields['data.primaryPhone']" ></input-text>
+     <input-text [label]="'primaryPhone'|translate"
+                 [(ngModel)]="data.primaryPhone"
+                 [name]="'primaryPhone'"
+                 [fieldValidations]="validation.fields['data.primaryPhone']"
+                 (blur)="tabValidation.validate();afterPrimaryPhoneInput()" ></input-text>
 
-#Component with iteration
+##Component with iteration
 
 component.ts
 
@@ -112,17 +121,13 @@ component.ts
     
       setValidations() {
         this.validation.fields.phonesList = new CollectionValidation();
-        if (!this.isHistory) {
-          this.data.phonesList.forEach((item, index) => this.addPhoneValidation(index, item));
-        }
-    
-    
+        this.data.phonesList.forEach((item, index) => this.addPhoneValidation(index, item));
       }
     
       addPhoneValidation(index, data) {
         let validator = new FieldsGroupValidation([
-          {path: 'type', data: data, validations: [FieldIsMandatory]},
-          {path: 'no', data: data, validations: [FieldIsMandatory]},
+          {path: 'type', data: data, validations: [Validators.mandatory]},
+          {path: 'no', data: data, validations: [Validators.mandatory]},
         ]);
         validator.id = 'phonesList';
         this.validation.fields.phonesList.addItem(validator);
@@ -152,7 +157,7 @@ component.html
       <div class="d-flex flex-column">
         <div class="d-flex flex-row justify-content-between align-items-center">
           <div class="form-subchapter"><span>{{'Other additional contact phones' | translate}}</span></div>
-          <button mat-button type="button" class="btn-app" (click)="addMobile() " *ngIf="!isHistory">
+          <button mat-button  (click)="addMobile() " >
             <mat-icon>add</mat-icon>
           </button>
         </div>
@@ -160,24 +165,23 @@ component.html
         <div class="d-flex flex-row align-items-center w-100"
              *ngFor="let phone of data.phonesList; let idx=index;">
           <input-select class="mr-1" style="width: 120px;"
-                                 [validation]="validation.fields.phonesList?.validations[idx]?.fields.type"
+                                 [(ngModel)]="phone.type"
+                                 [fieldValidations]="validation.fields.phonesList?.validations[idx]?.fields.type"
+                                 [options]="phoneTypesList"
+                                 matOptionValueItemField="item"
+                                 (ngModelChange)="tabValidation.validate();"
                                  [matOptionTpl]="selectTpl1"></input-select>
-          <input-text class="w-100 mr-1"
-                               [(modelHolder)]="phone.no"
-                               [validation]="validation.fields.phonesList?.validations[idx]?.fields.no"
-                               [disabled]="isHistory || !phone.type"></input-text>
-          <button mat-icon-button
-                  type="button"
-                  (click)="deleteMobile(idx)"
-                  [disabled]="data.phonesList.length===1"
-                  *ngIf="!isHistory">
+          <input-text class="w-100 mr-1" [(ngModel)]="phone.no"
+                                         (blur)="tabValidation.validate()"
+                                         [fieldValidations]="validation.fields.phonesList?.validations[idx]?.fields.no"></input-text>
+          <button mat-icon-button (click)="deleteMobile(idx)">
             <mat-icon>delete_outline</mat-icon>
           </button>
         </div>
       </div>
     </div>
 
-#Modal implementation
+##Modal implementation
 
 component.ts
 
@@ -195,7 +199,7 @@ component.ts
     
       ngAfterViewInit(): void {
         if (this.isModal) {
-          setTimeout(() => this.validation.validate());
+          this.validation.validateWithTimeout();
         }
       }
     
@@ -209,27 +213,25 @@ component.ts
     
       setValidations() {
         this.validation.fields[this.addressName] = {};
-        if (!this.isHistory) {
-          this.validation.addField({path: 'data.country', containerPath: this.addressName, data: this, validations: [FieldIsMandatory]});
-        }
+        this.validation.addField({path: 'data.country', containerPath: this.addressName, data: this, validations: [Validators.mandatory]});
         if (this.isModal) {
           this.validation.eventEmitter = this.validationStateEvent;
         }
       }
     }
 
-#Field Validations samples
+##Field Validations samples
 
-    this.validation.addField({path: 'data.primaryPhone', data: this, validations: [FieldIsMandatory]});
+    this.validation.addField({path: 'data.primaryPhone', data: this, validations: [Validators.mandatory]});
 
-In container (containerPath)
+###In container (containerPath)
     
     this.validation.fields[this.addressName] = {};
-    this.validation.addField({path: 'data.country', containerPath: this.addressName, data: this, validations: [FieldIsMandatory]});
+    this.validation.addField({path: 'data.country', containerPath: this.addressName, data: this, validations: [Validators.mandatory]});
 
-Custom validation:
+###Custom validation:
 
-    this.validation.addField(new FieldValidations('productSelection',
+    this.validation.addField(new Validators.custom('productSelection',
         this,
         [new FieldValidation({
           isError: true,
@@ -253,12 +255,102 @@ Custom validation:
         })],
         () => this.data));
         
-Warning message:
+###Backend Validation
+
+    setValidations(){
+        this.validation.addField({
+            path: 'data.primaryPhone',
+            data: this,
+            validations: [Validators.mandatory,
+              Validators.number,
+              new Validators.startsWith('07', this.translate),
+              new Validators.stringLengthEqualWith(10, this.translate),
+              new Validators.backend({isError: true, message: 'Phone belongs to another client', rule: () => this.primaryPhoneBEValidate})]
+          });
+      }
+      
+    afterPrimaryPhoneInput() {
+        if (!this.validation.fields['data.primaryPhone'].validate()) {
+          return;
+        }
+        this.primaryPhoneBEValidate = false;
+        this.collectDataService.checkPrimaryPhone(this.data).subscribe(response => {
+          this.primaryPhoneBEValidate = response;
+          this.tabValidation.validate();
+        });
+    }
+    
+###Validation Rule Condition
+         
+    this.validation.addField(new FieldValidations('data.citizenship',
+      this,
+      [new Validators.mandatory({
+        ruleCondition: (data: CiData) => {
+          return data.resident !== 'non-resident';
+        }
+      }), Transformers.upperCase],
+      () => this.data));
+  
+###Using translation service for complex sentence      
+      
+      let minAndMaxValidation = new Validators.custom({
+        isError: true,
+        messageFn: (data: ProductData) => {
+          if (!data.creditCard.selectedSubProduct) {
+            return '';
+          }
+          if (data.creditCard.requestedAmount < data.creditCard.selectedSubProduct.minAmount) {
+            return this.translate.instant('mustBeGreaterThan') + data.creditCard.selectedSubProduct.minAmount;
+          } else if (data.creditCard.requestedAmount > data.creditCard.selectedSubProduct.maxAmount) {
+            return this.translate.instant('mustBeLessThan') + data.creditCard.selectedSubProduct.maxAmount;
+          }
+        },
+        ruleCondition(data: ProductData): boolean {
+          return !data.creditCard.hide && data.creditCard.selected && !!data.creditCard.selectedSubProduct;
+        },
+        rule: (data: ProductData) => {
+          return data.creditCard.requestedAmount >= data.creditCard.selectedSubProduct.minAmount &&
+            data.creditCard.requestedAmount <= data.creditCard.selectedSubProduct.maxAmount;
+        }
+      });
+
+      this.validation.addField(new FieldValidations('data.creditCard.selectedSubProduct.selectedPackageCode',
+        this,
+        [new Validators.custom({
+          isError: true,
+          message: ValidationMessages.mandatoryField,
+          ruleCondition(data: ProductData): boolean {
+            return !data.creditCard.hide && data.creditCard.selected && !!data.creditCard.selectedSubProduct;
+          },
+          rule: (data: ProductData) => {
+            return !!data.creditCard.selectedSubProduct.selectedPackageCode;
+          }
+        })],
+        () => this.data));
+      this.validation.addField(new FieldValidations('data.creditCard.requestedAmount',
+        this,
+        [new Validators.mandatory({
+          ruleCondition: (data: ProductData) => {
+            return !data.creditCard.hide && data.creditCard.selected;
+          },
+          rule: (data: ProductData) => {
+            return !!(data.creditCard.requestedAmount);
+          }
+        }), new Validators.integer({
+          ruleCondition: (data: ProductData) => {
+            return !data.creditCard.hide && data.creditCard.selected;
+          },
+          rule: function(data: ProductData) {
+            return this.isInteger(data.creditCard.requestedAmount);
+          },
+        }), minAndMaxValidation],
+        () => this.data));
+###Warning message:
 
     this.data.agreementsUIData.agreements.forEach((agreement, i) => {
       let field = new FieldValidations('data.agreementsUIData.agreements.' + agreement.id,
         this,
-        [FieldIsMandatory],
+        [Validators.mandatory],
         () => this.data.agreementsUIData.agreements.find(item => item.id === agreement.id).value);
       if (agreement.isMandatoryYes) {
         field.addValidation({

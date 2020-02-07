@@ -2,6 +2,7 @@ import {FieldValidation} from '@app/synergy/validation/field-validation';
 import {Validators} from '@app/synergy/validation/validators';
 
 export class FieldValidations {
+  valid: boolean;
   hasError ? = false;
   hasWarning ? = false;
   message ? = '';
@@ -37,7 +38,7 @@ export class FieldValidations {
       fieldValidation.path = this.path;
       // console.log('fieldValidation', this.path, fieldValidation);
       fieldValidation.validate(value === undefined ? this.value : value);
-      // console.log('fieldValidation response', fieldValidation.valid);
+      // console.log('fieldValidation response', this.path, fieldValidation.valid);
       if (fieldValidation.valid) {
         return false;
       }
@@ -50,6 +51,7 @@ export class FieldValidations {
       this.message = fieldValidation.message;
       return true;
     });
+    this.valid = !this.hasError;
     return !this.hasError;
   }
 

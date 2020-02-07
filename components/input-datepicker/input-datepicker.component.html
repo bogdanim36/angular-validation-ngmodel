@@ -1,6 +1,6 @@
 <mat-form-field appearance="outline"
                 class="w-100"
-                [class.mat-form-field-invalid]="!disabled && fieldValidations?.hasError">
+                [class.input-invalid]="!disabled && fieldValidations?.hasError">
   <mat-label>{{label}}</mat-label>
   <input #datePickerInput
          matInput
@@ -13,5 +13,5 @@
          [disabled]="disabled">
   <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
   <mat-datepicker #datePicker [disabled]="disabled"></mat-datepicker>
-  <input-error-message *ngIf="!disabled" [fieldValidations]="fieldValidations"></input-error-message>
+  <input-error-message [fieldValidations]="fieldValidations"></input-error-message>
 </mat-form-field>

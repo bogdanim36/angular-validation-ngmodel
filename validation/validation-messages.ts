@@ -6,5 +6,6 @@ export enum ValidationMessages {
   stringLengthEqualWith = 'stringLengthEqualWith',
   emailFormat = 'emailFormatValidation',
   forbiddenCharacters = 'forbiddenCharacters',
-  checkOneOption = 'checkOneOption'
+  checkOneOption = 'checkOneOption',
+  onlyInteger = 'onlyInteger'
 }

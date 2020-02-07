@@ -4,8 +4,8 @@ import {ValidationMessages} from '@app/synergy/validation/validation-messages';
 export class OnlyRegex extends FieldValidation {
   regExp: RegExp;
 
-  constructor(regExp: RegExp) {
-    super({isError: true, message: ValidationMessages.forbiddenCharacters});
+  constructor(regExp: RegExp, message?: string) {
+    super({isError: true, message: message || ValidationMessages.forbiddenCharacters});
     if (regExp !== undefined) {
       this.regExp = regExp;
     } else {

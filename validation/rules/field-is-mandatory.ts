@@ -4,7 +4,7 @@ import {ValidationMessages} from '@app/synergy/validation/validation-messages';
 export class FieldIsMandatory extends FieldValidation {
   constructor(initial?: Partial<FieldIsMandatory>) {
     let source = initial || {};
-    Object.assign(source, {isError: true, message: ValidationMessages.mandatoryField});
+    source = Object.assign({isError: true, message: ValidationMessages.mandatoryField}, source);
     super(source);
   }
 

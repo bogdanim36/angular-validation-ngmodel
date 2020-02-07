@@ -1,13 +1,8 @@
-import {AfterViewInit, Component, ElementRef, forwardRef, Input, TemplateRef, ViewChild, ViewEncapsulation} from '@angular/core';
+import {AfterViewInit, Component, forwardRef, Input, TemplateRef, ViewEncapsulation} from '@angular/core';
 import {NG_VALUE_ACCESSOR} from '@angular/forms';
 import {MatRadioGroup} from '@angular/material';
 import {FieldValidations} from '@app/synergy/validation/field-validations';
 
-export const FORM_FIELD_RADIO_GROUP_CONTROL_VALUE_ACCESSOR: any = {
-  provide: NG_VALUE_ACCESSOR,
-  useExisting: forwardRef(() => InputRadioComponent),
-  multi: true
-};
 
 @Component({
   selector: 'input-radio',
@@ -15,7 +10,11 @@ export const FORM_FIELD_RADIO_GROUP_CONTROL_VALUE_ACCESSOR: any = {
   styleUrls: ['./input-radio.component.scss'],
   encapsulation: ViewEncapsulation.None,
   providers: [
-    FORM_FIELD_RADIO_GROUP_CONTROL_VALUE_ACCESSOR,
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => InputRadioComponent),
+      multi: true
+    },
     {provide: MatRadioGroup, useExisting: InputRadioComponent}
   ]
 })
@@ -52,7 +51,6 @@ export class InputRadioComponent extends MatRadioGroup implements AfterViewInit 
   }
 
   checkDisabled(event) {
-
     this.change.emit(this.value);
     if (this.disabled) {
       event.stopPropagation();

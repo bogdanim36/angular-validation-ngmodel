@@ -1,11 +1,10 @@
-<mat-form-field class="w-100"
+<mat-form-field class="w-100 ng-touched"
                 appearance="outline"
-                [class.mat-form-field-invalid]="!disabled && fieldValidations?.hasError">
+                [class.input-invalid]="!disabled && fieldValidations?.hasError">
   <mat-label>{{label}}</mat-label>
   <input matInput
          autocomplete="off"
          type="text"
-         ngDefaultControl
          [ngClass]="inputCssClass ? inputCssClass : ''"
          [name]="name? name:''"
          [(ngModel)]="value"
@@ -14,5 +13,5 @@
          [minlength]="minlength?minlength:''"
          [maxlength]="maxlength?maxlength:''"
          [disabled]="disabled"/>
-  <input-error-message *ngIf="!disabled" [fieldValidations]="fieldValidations"></input-error-message>
+  <input-error-message [fieldValidations]="fieldValidations"></input-error-message>
 </mat-form-field>

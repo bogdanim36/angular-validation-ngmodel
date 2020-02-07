@@ -1,6 +1,6 @@
 <mat-form-field class="w-100"
                 appearance="outline"
-                [class.mat-form-field-invalid]="!disabled && fieldValidations?.hasError">
+                [class.input-invalid]="!disabled && fieldValidations?.hasError">
   <input matInput placeholder="Input" autocomplete="off" style="display: none">
   <mat-slide-toggle
     class="example-margin"
@@ -10,5 +10,5 @@
     [disabled]="disabled">
     <mat-label>{{label}}</mat-label>
   </mat-slide-toggle>
-  <input-error-message *ngIf="!disabled" [fieldValidations]="fieldValidations"></input-error-message>
+  <input-error-message [fieldValidations]="fieldValidations"></input-error-message>
 </mat-form-field>

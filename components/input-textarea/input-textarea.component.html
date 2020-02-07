@@ -1,6 +1,6 @@
 <mat-form-field class="w-100"
                 appearance="outline"
-                [class.mat-form-field-invalid]="!disabled && fieldValidations?.hasError">
+                [class.input-invalid]="!disabled && fieldValidations?.hasError">
   <mat-label>{{label}}</mat-label>
   <textarea matInput
             autocomplete="off"
@@ -11,5 +11,5 @@
             (blur)="onBlur()"
             [disabled]="disabled">
   </textarea>
-  <input-error-message *ngIf="!disabled" [fieldValidations]="fieldValidations"></input-error-message>
+  <input-error-message [fieldValidations]="fieldValidations"></input-error-message>
 </mat-form-field>

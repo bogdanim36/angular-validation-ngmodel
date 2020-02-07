@@ -12,3 +12,7 @@ input-radio {
   display: block;
   margin-top: 1em !important;
 }
+
+input-radio:not(.input-radio-toggle) input-error-message {
+  left: 15px;
+}
